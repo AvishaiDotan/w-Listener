@@ -1,5 +1,5 @@
 # Use the official Node.js image as the base image
-FROM node:18
+FROM node:20
 
 # Set the working directory in the container
 WORKDIR /usr/src/app
@@ -9,6 +9,9 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
+
+# Install necessary dependencies for Puppeteer and Chromium
+RUN apt-get update && apt-get install -y chromium
 
 # Copy the rest of the application code to the working directory
 COPY . .

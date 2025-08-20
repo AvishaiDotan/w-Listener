@@ -21,7 +21,8 @@ export class WhatsappWebService {
         this.client = new Client({
             authStrategy: new LocalAuth(),
             puppeteer: {
-                args: ['--no-sandbox']
+                args: ['--no-sandbox'],
+                
             }
         })
     }

@@ -50,10 +50,21 @@ export class WhatsappEventEnricher {
                 const chat = await msg.getChat();
                 this.logger.debug("Chat details fetched", { chatName: chat.name, isGroup: chat.isGroup });
 
+                const contact = await msg.getContact();
+                const senderDetails = {
+                    name: contact.pushname || contact.verifiedName || "Unknown",
+                    phone: contact.number
+                };
+                this.logger.debug("Sender details fetched", senderDetails);
+
                 if (chat.isGroup && chat.name === GROUP_NAME) {
                     this.logger.debug("Message belongs to the target group, saving to database");
                     const db = await MongoDbService.getInstance();
-                    await db.createOne<WAWebJS.Message>(COLLECTION_NAME!, msg);
+                    const messageData = {
+                        ...msg,
+                        senderDetails: senderDetails
+                    };
+                    await db.createOne(COLLECTION_NAME!, messageData);
                     this.logger.debug("Message saved to database successfully");
                 }
                 return false;
